@@ -1,31 +1,35 @@
 # 📅 Appointment Scheduler API
 
-A simple appointment scheduling system built with **NestJS + PostgreSQL + MikroORM**, supporting configurable time slots, booking, and API documentation.
+A backend **Appointment Scheduling System API** built with **NestJS, PostgreSQL, and MikroORM**, supporting dynamic slot generation, booking management, and environment-based deployment.
 
 ---
 
 # 🚀 Features
 
-- Generate available time slots dynamically
-- Book appointments with validation
-- Prevent double booking
-- Configurable working hours (9 AM – 6 PM)
-- Configurable slot duration (default: 30 mins)
-- Environment-based configuration (dev / staging / prod)
+- Dynamic appointment slot generation (no cron job required)
+- Book & cancel appointments
+- Prevent double booking (date + time constraint)
+- Configurable working hours (default: 9 AM – 6 PM)
+- Configurable slot duration (default: 30 minutes)
+- Environment-based configuration (development / staging / production)
 - Swagger API documentation
-- Redoc documentation UI
+- Redoc API documentation
+- Input validation using Class Validator
+- Clean architecture with NestJS modules
 
 ---
 
 # 🧱 Tech Stack
 
-- NestJS
+- NestJS (v11)
 - PostgreSQL
-- MikroORM
-- Swagger (OpenAPI)
+- MikroORM (v6)
+- Swagger / OpenAPI
 - Redoc
-- Class Validator
+- Class Validator & Class Transformer
 - DayJS
+- Jest (unit & e2e testing)
+- ESLint + Prettier
 
 ---
 
@@ -39,9 +43,9 @@ npm install
 
 ---
 
-## 2. Setup environment variables
+## 2. Environment Configuration
 
-Create files:
+Create environment files:
 
 ```
 .env.development
@@ -49,7 +53,7 @@ Create files:
 .env.production
 ```
 
-Example `.env.development`:
+### Example `.env.development`
 
 ```env
 NODE_ENV=development
@@ -64,7 +68,7 @@ DB_NAME=appointment_dev
 
 ---
 
-## 3. Create PostgreSQL database
+## 3. Create PostgreSQL Database
 
 ```sql
 CREATE DATABASE appointment_dev;
@@ -72,19 +76,42 @@ CREATE DATABASE appointment_dev;
 
 ---
 
-## 4. Run project
+## 4. Run the Project
 
-### Development
+### 🔥 Development (watch mode)
 
 ```bash
 npm run start:dev
 ```
 
-### Production
+### 🐛 Debug mode
+
+```bash
+npm run start:debug
+```
+
+### 🧪 Staging
+
+```bash
+npm run start:staging
+```
+
+### 🚀 Production
 
 ```bash
 npm run build
 npm run start:prod
+```
+
+---
+
+## 5. Build Commands
+
+```bash
+npm run build
+npm run build:dev
+npm run build:staging
+npm run build:prod
 ```
 
 ---
@@ -152,36 +179,54 @@ http://localhost:3000/docs
 
 ---
 
-# 🧠 System Design Notes
+# 🧪 Testing
 
-- Slots are generated dynamically (no cron job required)
-- Database stores only bookings (not slots)
-- Composite uniqueness prevents duplicate booking (date + time)
-- Config table controls system behavior
-
----
-
-# ⚠️ Assumptions
-
-- Single service provider system
-- No authentication implemented
-- Timezone is server-based
-- Fixed slot duration unless configured
-
----
-
-# ✅ Run Summary
+## Run unit tests
 
 ```bash
-npm install
-npm run start:dev
+npm run test
 ```
 
-Then open:
+## Watch mode
 
-- Swagger: [http://localhost:3000/swagger](http://localhost:3000/swagger)
-- Redoc: [http://localhost:3000/docs](http://localhost:3000/docs)
-
+```bash
+npm run test:watch
 ```
 
+## Coverage report
+
+```bash
+npm run test:cov
+```
+
+## E2E tests
+
+```bash
+npm run test:e2e
+```
+
+---
+
+# 🧠 System Design Notes
+
+- Slots are generated dynamically at runtime
+- Only bookings are persisted in the database
+- Composite uniqueness (date + time) prevents double booking
+- Configurable system behavior via environment variables
+- Designed for single-provider appointment system
+
+---
+
+# ⚙️ Code Quality Tools
+
+## Lint
+
+```bash
+npm run lint
+```
+
+## Format Code
+
+```bash
+npm run format
 ```
