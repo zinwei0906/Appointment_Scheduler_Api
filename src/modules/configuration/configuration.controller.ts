@@ -7,76 +7,123 @@ import {
   Param,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiHeader,
+  ApiSecurity,
+} from '@nestjs/swagger';
+
 import { ConfigurationService } from './configuration.service';
 import { CreateDayOffDto, CreateUnavailableHourDto } from './dto';
+
 import { DayOff } from '../../entities/day-off.entity';
 import { UnavailableHour } from '../../entities/unavailable-hour.entity';
 
+import { ApiKeyGuard } from '../../common/guards/api-key.guard';
+import { ResponseService } from '../../common/services/response.service';
+import { Language } from '../../common/decorators/language.decorator';
+import { ApiResponseDto } from '../../common/interfaces/api-response.dto';
+
 @ApiTags('Configuration')
 @Controller('configuration')
+@UseGuards(ApiKeyGuard)
+@ApiSecurity('api-key')
+@ApiHeader({
+  name: 'x-api-key',
+  required: true,
+  example: 'test-api-key-12345',
+})
+@ApiHeader({
+  name: 'Accept-Language',
+  required: false,
+  example: 'en',
+})
 export class ConfigurationController {
-  constructor(private readonly configurationService: ConfigurationService) {}
+  constructor(
+    private readonly configurationService: ConfigurationService,
+    private readonly responseService: ResponseService,
+  ) {}
 
-  // Days Off Endpoints
+  // =========================
+  // DAY OFF
+  // =========================
+
   @Post('days-off')
   @ApiOperation({
     summary: 'Create day off',
-    description: 'Mark a specific date as a day off (e.g., public holiday)',
+    description: 'Mark a specific date as unavailable (holiday / leave)',
   })
   @ApiResponse({
     status: 201,
     description: 'Day off created successfully',
     type: DayOff,
   })
-  async createDayOff(@Body() dto: CreateDayOffDto): Promise<DayOff> {
-    return this.configurationService.createDayOff(dto);
+  async createDayOff(
+    @Body() dto: CreateDayOffDto,
+    @Language() language: string,
+  ): Promise<ApiResponseDto<DayOff>> {
+    const result = await this.configurationService.createDayOff(dto);
+
+    return this.responseService.buildResponse(
+      'DAY_OFF_CREATED',
+      result,
+      language,
+    );
   }
 
   @Get('days-off')
   @ApiOperation({
     summary: 'Get all days off',
-    description: 'Retrieve all configured days off',
   })
   @ApiResponse({
     status: 200,
-    description: 'List of days off',
+    description: 'List of all days off',
     type: [DayOff],
   })
-  async getAllDaysOff(): Promise<DayOff[]> {
-    return this.configurationService.getAllDaysOff();
+  async getAllDaysOff(
+    @Language() language: string,
+  ): Promise<ApiResponseDto<DayOff[]>> {
+    const result = await this.configurationService.getAllDaysOff();
+
+    return this.responseService.buildResponse('SUCCESS', result, language);
   }
 
   @Delete('days-off/:id')
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Delete day off',
-    description: 'Remove a day off configuration',
   })
   @ApiParam({
     name: 'id',
-    description: 'Day off ID',
     example: 1,
   })
-  @ApiResponse({
-    status: 204,
-    description: 'Day off deleted successfully',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Day off not found',
-  })
-  async deleteDayOff(@Param('id') id: string): Promise<void> {
-    return this.configurationService.deleteDayOff(parseInt(id));
+  async deleteDayOff(
+    @Param('id') id: string,
+    @Language() language: string,
+  ): Promise<ApiResponseDto<void>> {
+    await this.configurationService.deleteDayOff(parseInt(id));
+
+    return this.responseService.buildResponse(
+      'DAY_OFF_DELETED',
+      undefined,
+      language,
+    );
   }
 
-  // Unavailable Hours Endpoints
+  // =========================
+  // UNAVAILABLE HOURS
+  // =========================
+
   @Post('unavailable-hours')
   @ApiOperation({
     summary: 'Create unavailable hour',
-    description:
-      'Set a time range as unavailable for a specific day of week (e.g., lunch break)',
+    description: 'Block a time range for specific weekdays (e.g. lunch break)',
   })
   @ApiResponse({
     status: 201,
@@ -85,44 +132,53 @@ export class ConfigurationController {
   })
   async createUnavailableHour(
     @Body() dto: CreateUnavailableHourDto,
-  ): Promise<UnavailableHour> {
-    return this.configurationService.createUnavailableHour(dto);
+    @Language() language: string,
+  ): Promise<ApiResponseDto<UnavailableHour>> {
+    const result = await this.configurationService.createUnavailableHour(dto);
+
+    return this.responseService.buildResponse(
+      'UNAVAILABLE_HOUR_CREATED',
+      result,
+      language,
+    );
   }
 
   @Get('unavailable-hours')
   @ApiOperation({
     summary: 'Get all unavailable hours',
-    description: 'Retrieve all configured unavailable hours',
   })
   @ApiResponse({
     status: 200,
     description: 'List of unavailable hours',
     type: [UnavailableHour],
   })
-  async getAllUnavailableHours(): Promise<UnavailableHour[]> {
-    return this.configurationService.getAllUnavailableHours();
+  async getAllUnavailableHours(
+    @Language() language: string,
+  ): Promise<ApiResponseDto<UnavailableHour[]>> {
+    const result = await this.configurationService.getAllUnavailableHours();
+
+    return this.responseService.buildResponse('SUCCESS', result, language);
   }
 
   @Delete('unavailable-hours/:id')
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @HttpCode(HttpStatus.OK)
   @ApiOperation({
     summary: 'Delete unavailable hour',
-    description: 'Remove an unavailable hour configuration',
   })
   @ApiParam({
     name: 'id',
-    description: 'Unavailable hour ID',
     example: 1,
   })
-  @ApiResponse({
-    status: 204,
-    description: 'Unavailable hour deleted successfully',
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Unavailable hour not found',
-  })
-  async deleteUnavailableHour(@Param('id') id: string): Promise<void> {
-    return this.configurationService.deleteUnavailableHour(parseInt(id));
+  async deleteUnavailableHour(
+    @Param('id') id: string,
+    @Language() language: string,
+  ): Promise<ApiResponseDto<void>> {
+    await this.configurationService.deleteUnavailableHour(parseInt(id));
+
+    return this.responseService.buildResponse(
+      'UNAVAILABLE_HOUR_DELETED',
+      undefined,
+      language,
+    );
   }
 }
