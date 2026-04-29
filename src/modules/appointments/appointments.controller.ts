@@ -42,7 +42,7 @@ export class AppointmentsController {
   @ApiQuery({
     name: 'date',
     description: 'Date to check (YYYY-MM-DD)',
-    example: '2024-04-04',
+    example: '2026-04-29',
   })
   @ApiQuery({
     name: 'slotsNeeded',

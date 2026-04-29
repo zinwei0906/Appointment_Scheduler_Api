@@ -4,7 +4,7 @@ import { IsDateString, IsOptional, IsInt, Min } from 'class-validator';
 export class GetAvailableSlotsDto {
   @ApiProperty({
     description: 'Date to check available slots (YYYY-MM-DD)',
-    example: '2024-04-04',
+    example: '2026-04-29',
   })
   @IsDateString()
   date!: string;

@@ -121,7 +121,7 @@ npm run build:prod
 ## 📌 Get Available Slots
 
 ```http
-GET /appointments/slots?date=2024-04-04
+GET /appointments/slots?date=2026-04-29
 ```
 
 ### Response
@@ -129,7 +129,7 @@ GET /appointments/slots?date=2024-04-04
 ```json
 [
   {
-    "date": "2024-04-04",
+    "date": "2026-04-29",
     "time": "10:00",
     "available_slots": 1
   }
@@ -148,7 +148,7 @@ POST /appointments
 
 ```json
 {
-  "date": "2024-04-04",
+  "date": "2026-04-29",
   "time": "10:00"
 }
 ```

@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class AvailableSlotResponseDto {
   @ApiProperty({
     description: 'Date of the slot',
-    example: '2024-04-04',
+    example: '2026-04-29',
   })
   date!: string;
 
@@ -29,7 +29,7 @@ export class AppointmentResponseDto {
 
   @ApiProperty({
     description: 'Appointment date',
-    example: '2024-04-04',
+    example: '2026-04-29',
   })
   date!: string;
 
@@ -61,7 +61,7 @@ export class AppointmentResponseDto {
 
   @ApiProperty({
     description: 'Creation timestamp',
-    example: '2024-04-04T10:00:00.000Z',
+    example: '2026-04-29T10:00:00.000Z',
   })
   createdAt!: Date;
 }

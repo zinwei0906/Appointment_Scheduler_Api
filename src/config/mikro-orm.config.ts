@@ -1,6 +1,6 @@
 import { MikroOrmModuleOptions } from '@mikro-orm/nestjs';
 import { ConfigService } from '@nestjs/config';
-import { PostgreSqlDriver } from 'node_modules/@mikro-orm/postgresql/PostgreSqlDriver';
+import { PostgreSqlDriver } from '@mikro-orm/postgresql';
 
 export const getMikroOrmConfig = (
   configService: ConfigService,

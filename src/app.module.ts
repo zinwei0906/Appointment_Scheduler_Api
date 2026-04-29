@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { AppointmentsModule } from './modules/appointments/appointments.module';
-// import { ConfigurationModule } from './modules/configuration/configuration.module';
+import { ConfigurationModule } from './modules/configuration/configuration.module';
 import { getMikroOrmConfig } from './config/mikro-orm.config';
 
 @Module({
@@ -22,7 +22,7 @@ import { getMikroOrmConfig } from './config/mikro-orm.config';
 
     // Feature modules
     AppointmentsModule,
-    // ConfigurationModule,
+    ConfigurationModule,
   ],
 })
 export class AppModule {}

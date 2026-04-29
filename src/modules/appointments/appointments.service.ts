@@ -28,9 +28,6 @@ export class AppointmentsService {
   private readonly operationalDays: number[];
 
   constructor(
-    // @InjectEntityManager('default')
-    // private readonly em: EntityManager,
-
     @InjectRepository(Appointment)
     private readonly appointmentRepository: EntityRepository<Appointment>,
 
@@ -65,6 +62,11 @@ export class AppointmentsService {
       '1,2,3,4,5',
     );
     this.operationalDays = daysString.split(',').map((d) => parseInt(d.trim()));
+  }
+
+  // Helper method to get EntityManager from repository
+  private get em(): EntityManager {
+    return this.appointmentRepository.getEntityManager();
   }
 
   /**
@@ -213,8 +215,8 @@ export class AppointmentsService {
     appointment.customerEmail = dto.customerEmail;
     appointment.customerPhone = dto.customerPhone;
 
-    // this.em.persist(appointment);
-    // await this.em.flush();
+    this.em.persist(appointment);
+    await this.em.flush();
 
     return this.mapToResponseDto(appointment);
   }
@@ -238,8 +240,8 @@ export class AppointmentsService {
     if (!appointment) {
       throw new NotFoundException(`Appointment with ID ${id} not found`);
     }
-    // this.em.remove(appointment);
-    // await this.em.flush();
+    this.em.remove(appointment);
+    await this.em.flush();
   }
 
   /**

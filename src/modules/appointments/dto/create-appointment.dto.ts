@@ -13,7 +13,7 @@ import {
 export class CreateAppointmentDto {
   @ApiProperty({
     description: 'Appointment date (YYYY-MM-DD)',
-    example: '2024-04-04',
+    example: '2026-04-29',
   })
   @IsDateString()
   date!: string;
@@ -30,7 +30,7 @@ export class CreateAppointmentDto {
 
   @ApiProperty({
     description: 'Customer name',
-    example: 'John Doe',
+    example: 'Wei',
     required: false,
   })
   @IsOptional()
@@ -39,7 +39,7 @@ export class CreateAppointmentDto {
 
   @ApiProperty({
     description: 'Customer email',
-    example: 'john@example.com',
+    example: 'wei@example.com',
     required: false,
   })
   @IsOptional()
